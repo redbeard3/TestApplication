@@ -2,8 +2,8 @@ package com.example.myapplication.model.web;
 
 import android.util.Log;
 
-import com.example.myapplication.model.pojo.Album;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,8 +44,8 @@ public class DataReciver {
         return new String(getUrlBytes(stringUrl));
     }
 
-    public List<Album> getAlbumItems() {
-        List<Album> albums = new ArrayList<>();
+    public List<LinkedTreeMap> getAlbumItems() {
+        List<LinkedTreeMap> albums = new ArrayList<>();
         try {
             String resultByJson = new DataReciver().getStringUrl("https://jsonplaceholder.typicode.com/albums");
             albums = new Gson().fromJson(resultByJson, ArrayList.class);
