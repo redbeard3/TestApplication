@@ -21,8 +21,8 @@ public class DataReciver {
     public byte[] getUrlBytes(String stringUrl) throws IOException {
         URL url = new URL(stringUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             InputStream inputStream = connection.getInputStream();
             if (HttpURLConnection.HTTP_OK != connection.getResponseCode()) {
                 throw new IOException(connection.getResponseMessage() + stringUrl); // todo обработать в виде заглушки
@@ -35,10 +35,12 @@ public class DataReciver {
             }
 
             outputStream.close();
-            return outputStream.toByteArray();
+        } catch (IOException ex) {
+            Log.e(TAG, "Error by downloading image", ex);
         } finally {
             connection.disconnect();
         }
+        return outputStream.toByteArray();
     }
 
     public String getStringUrl(String stringUrl) throws IOException {

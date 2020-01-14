@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/tumblUrl_imageView"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_width="150px"
+        android:layout_height="150px"
         android:layout_gravity="center"
         android:scaleType="centerCrop"/>
 </LinearLayout>

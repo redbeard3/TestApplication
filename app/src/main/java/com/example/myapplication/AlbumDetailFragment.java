@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.model.web.DataReciver;
@@ -64,6 +65,7 @@ public class AlbumDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.album_detail_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.detail_recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3)); // todo можно реализовать динамическое кол-во столбцов при помощи ViewTreeObserver.OnGlobalLayoutListener
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         setupAdapter();
 
@@ -127,6 +129,8 @@ public class AlbumDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull DetailHolder holder, int position) {
+            Drawable placeholder = getResources().getDrawable(R.drawable.ic_launcher_foreground);
+            holder.bindDetail(placeholder);
             mThumbnailDownloader.queueThumbnail(holder, (String) mUrls.get(position).get("thumbnailUrl"));
         }
 

@@ -49,14 +49,15 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     @Override
     protected void onLooperPrepared() {
         mRequestHandler = new Handler() {
-
-            @Override
-            public void handleMessage(@NonNull Message msg) {
-                if (msg.what == MESSAGE_DOWNLOAD) {
-                    T target = (T) msg.obj;
-                    handleRequest(target);
+                @Override
+                public void handleMessage(@NonNull Message msg) {
+                    if (msg.what == MESSAGE_DOWNLOAD) {
+                        T target = (T) msg.obj;
+                        Log.i(TAG, "Got a request for URL: " +
+                                mRequestMap.get(target));
+                        handleRequest(target);
+                    }
                 }
-            }
         };
     }
 
@@ -67,8 +68,9 @@ public class ThumbnailDownloader<T> extends HandlerThread {
                 return;
             }
 
-            byte[] bytes = new DataReciver().getUrlBytes(url);
+            byte[] bytes = new DataReciver().getUrlBytes("http://placekitten.com/g/160/120");
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Log.i(TAG, "Bitmap created");
 
             mResponseHandler.post(new Runnable() {
                 @Override
