@@ -1,11 +1,16 @@
 package com.example.myapplication;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.model.web.DataReciver;
+import com.example.myapplication.model.web.ThumbnailDownloader;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
@@ -24,6 +30,8 @@ import static com.example.myapplication.AlbumDetailActivity.EXTRA_ALBUM_ID;
 public class AlbumDetailFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private List<LinkedTreeMap> mUrls = new ArrayList<>();
+    private ThumbnailDownloader<DetailHolder> mThumbnailDownloader;
+    private static final String TAG = "AlbumDetailFragment";
 
     public Fragment newInstance() {
         return new AlbumDetailFragment();
@@ -35,6 +43,19 @@ public class AlbumDetailFragment extends Fragment {
         String id = getActivity().getIntent().getSerializableExtra(EXTRA_ALBUM_ID).toString();
         setRetainInstance(true);
         new DataReciverTask(id).execute();
+
+        Handler responseHadler = new Handler();
+        mThumbnailDownloader = new ThumbnailDownloader<>(responseHadler);
+        mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<DetailHolder>() {
+            @Override
+            public void onThumbnailDownloaded(DetailHolder target, Bitmap thumbnail) {
+                Drawable drawable = new BitmapDrawable(getResources(), thumbnail);
+                target.bindDetail(drawable);
+            }
+        });
+        mThumbnailDownloader.start();
+        mThumbnailDownloader.getLooper();
+        Log.i(TAG, "Background thread started");
     }
 
     @Nullable
@@ -47,6 +68,19 @@ public class AlbumDetailFragment extends Fragment {
         setupAdapter();
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mThumbnailDownloader.quit();
+        Log.i(TAG, "Background thread destroyed");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mThumbnailDownloader.clearQueue();
     }
 
     private void setupAdapter() {
@@ -93,8 +127,7 @@ public class AlbumDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull DetailHolder holder, int position) {
-            holder.bindDetail(mUrls.get(position));
-
+            mThumbnailDownloader.queueThumbnail(holder, (String) mUrls.get(position).get("thumbnailUrl"));
         }
 
         @Override
@@ -104,18 +137,16 @@ public class AlbumDetailFragment extends Fragment {
     }
 
     private class DetailHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private LinkedTreeMap mDetail;
-        private TextView mDetailTextView;
+        private ImageView mDetailView;
 
         public DetailHolder(@NonNull View itemView) {
             super(itemView);
-            mDetailTextView = itemView.findViewById(R.id.tumblUrl_text_view);
+            mDetailView = itemView.findViewById(R.id.tumblUrl_imageView);
             itemView.setOnClickListener(this);
         }
 
-        public void bindDetail(LinkedTreeMap url) {
-            this.mDetail = url;
-            mDetailTextView.setText((String) mDetail.get("thumbnailUrl"));
+        public void bindDetail(Drawable drawable) {
+            mDetailView.setImageDrawable(drawable);
         }
 
         @Override
