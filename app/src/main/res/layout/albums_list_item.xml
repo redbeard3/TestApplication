@@ -7,13 +7,12 @@
 
     <TextView
         android:id="@+id/album_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10sp"
         android:paddingTop="10sp"
         android:paddingRight="10sp"
         android:paddingBottom="10sp"
-        android:textColor="?attr/colorError"
         android:textSize="18sp"
         android:typeface="normal"
         app:fontFamily="casual" />

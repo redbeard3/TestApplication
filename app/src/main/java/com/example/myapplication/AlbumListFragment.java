@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.*;
@@ -14,8 +15,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.model.web.DataReciver;
 import com.google.gson.internal.LinkedTreeMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.example.myapplication.AbstactFragmentActivity.invoke;
+import static com.example.myapplication.AlbumDetailActivity.EXTRA_ALBUM_ID;
 
 public class AlbumListFragment extends Fragment {
 	private static final String TAG = "AlbumListFragment";
@@ -94,6 +101,7 @@ public class AlbumListFragment extends Fragment {
 
 	private class AlbumHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 		private TextView mAlbumNameTextView;
+		private LinkedTreeMap mAlbum;
 
 		public AlbumHolder(@NonNull View itemView) {
 			super(itemView);
@@ -103,11 +111,15 @@ public class AlbumListFragment extends Fragment {
 
 		@Override
 		public void onClick(View view) {
-
+			Map<String, Serializable> params = new HashMap<>();
+			params.put(EXTRA_ALBUM_ID, (Serializable) mAlbum.get("id"));
+			Intent intent = invoke(getActivity(), AlbumDetailActivity.class, params);
+			startActivity(intent);
 		}
 
-		public void bindAlbum(LinkedTreeMap map) {
-			mAlbumNameTextView.setText((String) map.get("title"));
+		public void bindAlbum(LinkedTreeMap album) {
+			this.mAlbum = album;
+			mAlbumNameTextView.setText((String) mAlbum.get("title"));
 		}
 	}
 }

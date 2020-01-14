@@ -1,5 +1,6 @@
 package com.example.myapplication.model.web;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -40,21 +41,50 @@ public class DataReciver {
         }
     }
 
-    public String getStringUrl (String stringUrl) throws IOException {
+    public String getStringUrl(String stringUrl) throws IOException {
         return new String(getUrlBytes(stringUrl));
     }
 
     public List<LinkedTreeMap> getAlbumItems() {
         List<LinkedTreeMap> albums = new ArrayList<>();
         try {
-            String resultByJson = new DataReciver().getStringUrl("https://jsonplaceholder.typicode.com/albums");
+            String resultByJson = getStringUrl("https://jsonplaceholder.typicode.com/albums");
             albums = new Gson().fromJson(resultByJson, ArrayList.class);
             Log.i(TAG, "Content of URL: " + resultByJson);
-            return albums;
         } catch (IOException e) {
             Log.e(TAG, "Failed to fetch URL: ", e.getCause());
         }
 
         return albums;
+    }
+
+    public List<LinkedTreeMap> getUrls(String id) {
+        List<LinkedTreeMap> urls = new ArrayList<>();
+        try {
+            String url = Uri.parse("https://jsonplaceholder.typicode.com/photos?")
+                    .buildUpon()
+                    .appendQueryParameter("albumId", getCorrectId(id))
+                    .build()
+                    .toString();
+            String resultByJson = getStringUrl(url);
+            urls = new Gson().fromJson(resultByJson, ArrayList.class);
+            Log.i(TAG, "Content of URL: " + resultByJson);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to fetch URL: ", e.getCause());
+        }
+
+        return urls;
+    }
+
+    private String getCorrectId(String incorrect) {
+        if (incorrect.contains(".")) {
+            String[] strings = incorrect.split("\\.");
+            if (strings.length == 2) {
+                return strings[0];
+            } else {
+                throw new IllegalArgumentException(String.format("Идентификатор альбома %s не корректный", incorrect));
+            }
+        }
+        return incorrect;
     }
 }
