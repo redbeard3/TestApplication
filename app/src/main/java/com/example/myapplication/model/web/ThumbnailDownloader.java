@@ -68,7 +68,13 @@ public class ThumbnailDownloader<T> extends HandlerThread {
                 return;
             }
 
-            byte[] bytes = new DataReciver().getUrlBytes("http://placekitten.com/g/160/120");
+            /**
+             * "https://placekitten.com/g/160/120"
+             * todo пока заглушка, т.к. URL вида https://via.placeholder.com/150/501fe1 не грузится с ошибкой java.io.FileNotFoundException: https://via.placeholder.com/150/501fe1
+             *  изначально была ошибка Cleartext HTTP traffic not permitted, использовал решение из https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted - не помогло
+             *  даже замена https на http не помогает
+             */
+            byte[] bytes = new DataReciver().getUrlBytes("https://placekitten.com/g/250/250");
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             Log.i(TAG, "Bitmap created");
 

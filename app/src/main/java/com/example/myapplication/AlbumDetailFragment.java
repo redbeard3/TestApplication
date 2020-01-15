@@ -64,8 +64,7 @@ public class AlbumDetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.album_detail_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.detail_recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3)); // todo можно реализовать динамическое кол-во столбцов при помощи ViewTreeObserver.OnGlobalLayoutListener
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4)); // todo можно реализовать динамическое кол-во столбцов при помощи ViewTreeObserver.OnGlobalLayoutListener
 
         setupAdapter();
 
@@ -129,7 +128,7 @@ public class AlbumDetailFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull DetailHolder holder, int position) {
-            Drawable placeholder = getResources().getDrawable(R.drawable.ic_launcher_foreground);
+            Drawable placeholder = getResources().getDrawable(R.drawable.ic_launcher_foreground); // заглушка, если нет данных
             holder.bindDetail(placeholder);
             mThumbnailDownloader.queueThumbnail(holder, (String) mUrls.get(position).get("thumbnailUrl"));
         }
