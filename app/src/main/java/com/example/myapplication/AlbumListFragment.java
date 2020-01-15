@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.model.common.CustomItemDecorator;
 import com.example.myapplication.model.web.DataReciver;
 import com.google.gson.internal.LinkedTreeMap;
 

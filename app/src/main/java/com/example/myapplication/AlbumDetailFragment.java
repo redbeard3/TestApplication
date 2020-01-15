@@ -67,7 +67,7 @@ public class AlbumDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.album_detail_fragment, container, false);
         mRecyclerView = view.findViewById(R.id.detail_recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4)); // todo можно реализовать динамическое кол-во столбцов при помощи ViewTreeObserver.OnGlobalLayoutListener
-        mRecyclerView.addItemDecoration(new CustomItemDecorator());
+        mRecyclerView.addItemDecoration(new CustomItemDecorator(20));
 
         setupAdapter();
 
