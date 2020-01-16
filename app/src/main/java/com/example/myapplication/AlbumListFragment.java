@@ -1,10 +1,13 @@
 package com.example.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +21,11 @@ import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import static com.example.myapplication.AbstactFragmentActivity.invoke;
@@ -29,13 +35,20 @@ public class AlbumListFragment extends Fragment {
 	private static final String TAG = "AlbumListFragment";
 	private RecyclerView mRecyclerView;
 	private List<LinkedTreeMap> mAlbums = new ArrayList<>();
+	private TextView mEmptyText;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true); // для уничтожения таска
-		new DataReciverTask().execute();
+        if (isNotOnline()) {
+            Toast.makeText(getActivity(), "Нет соединения с интернетом.", Toast.LENGTH_LONG).show();
+        } else {
+            new DataReciverTask().execute();
+        }
 	}
+
+
 
 	@Nullable
 	@Override
@@ -43,6 +56,7 @@ public class AlbumListFragment extends Fragment {
 		View view = inflater.inflate(R.layout.albums_fragment, container, false);
 		mRecyclerView = view.findViewById(R.id.root_recycler_view);
 		mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mEmptyText = view.findViewById(android.R.id.empty);
 
 		setupAdapter();
 
@@ -68,7 +82,9 @@ public class AlbumListFragment extends Fragment {
 		@Override
 		protected void onPostExecute(List<LinkedTreeMap> albums) {
 			mAlbums = albums;
-			setupAdapter();
+			if (null != mAlbums) {
+                setupAdapter();
+            }
 		}
 	}
 
@@ -78,6 +94,7 @@ public class AlbumListFragment extends Fragment {
 
 		public AlbumAdapter(List<LinkedTreeMap> albums) {
 			this.mAlbums = albums;
+            displayView();
 		}
 
 		@NonNull
@@ -123,4 +140,21 @@ public class AlbumListFragment extends Fragment {
 			mAlbumNameTextView.setText((String) mAlbum.get("title"));
 		}
 	}
+
+    private boolean isNotOnline() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return connectivityManager.getActiveNetworkInfo() == null;
+    }
+
+    private void displayView() {
+        if (null != mRecyclerView && null != mEmptyText) {
+            if (mAlbums.size() != 0) { // вывод сообщения, что список пуст. можно было бы создать свой кастомный RecyclerView, в котором сделать метод setEmptyView
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mEmptyText.setVisibility(View.INVISIBLE);
+            } else {
+                mEmptyText.setVisibility(View.VISIBLE);
+                mRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
 }

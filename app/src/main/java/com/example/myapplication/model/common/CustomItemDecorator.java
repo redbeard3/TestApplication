@@ -33,4 +33,27 @@ public class CustomItemDecorator extends RecyclerView.ItemDecoration {
         }
 
     }
+
+//    @Override
+//    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+//        canvas.save();
+//
+//        DividerItemDecoration divider = new DividerItemDecoration();
+//
+//        final int leftWithMargin = convertDpToPixel(56);
+//        final int right = parent.getWidth();
+//
+//        final int childCount = parent.getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            final View child = parent.getChildAt(i);
+//            int adapterPosition = parent.getChildAdapterPosition(child);
+//            left = (adapterPosition == lastPosition) ?  0 : leftWithMargin;
+//            parent.getDecoratedBoundsWithMargins(child, mBounds);
+//            final int bottom = mBounds.bottom + Math.round(ViewCompat.getTranslationY(child));
+//            final int top = bottom - mDivider.getIntrinsicHeight();
+//            mDivider.setBounds(left, top, right, bottom);
+//            mDivider.draw(canvas);
+//        }
+//        canvas.restore();
+//    }
 }
