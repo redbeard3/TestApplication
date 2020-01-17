@@ -69,10 +69,10 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             }
 
             /**
-             * "https://placekitten.com/g/160/120"
              * todo пока заглушка, т.к. URL вида https://via.placeholder.com/150/501fe1 не грузится с ошибкой java.io.FileNotFoundException: https://via.placeholder.com/150/501fe1
-             *  изначально была ошибка Cleartext HTTP traffic not permitted, использовал решение из https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted - не помогло
-             *  даже замена https на http не помогает
+             *  изначально была ошибка Cleartext HTTP traffic not permitted, использовал решение из https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted
+             *
+             *  видимо, связано с тем, что на серваке физически нет картинки, она генерится каким-то скриптом.
              */
             byte[] bytes = new DataReciver().getUrlBytes("https://placekitten.com/g/250/250");
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
